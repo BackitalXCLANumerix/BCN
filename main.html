@@ -24,7 +24,6 @@
             }
         }
     </script>
-    <!-- test tg v2 -->
     <style>
         body { background-color: #050505; color: #ffffff; }
         .bento-card {
@@ -49,7 +48,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
        (function(){
-          emailjs.init("service_h3i6men");
+          emailjs.init("2lBTP9OOBBa9sWrK4");
        })();
     </script>
 </head>
@@ -475,16 +474,17 @@
         const btn = document.getElementById('btn-submit');
         const status = document.getElementById('form-status');
         
-       
         const originalText = btn.innerText;
         btn.innerText = 'Envoi en cours...';
         btn.disabled = true;
 
-        const serviceID = 'service_h3i6men';
+        
+        const serviceID = 'service_h3i6men'; 
+        const templateID = 'template_p8hmek3'; 
 
         emailjs.sendForm(serviceID, templateID, this)
             .then(() => {
-                // Succès
+                
                 btn.innerText = 'Envoyé !';
                 btn.classList.replace('bg-white', 'bg-green-500');
                 btn.classList.replace('text-black', 'text-white');
@@ -502,13 +502,13 @@
                     document.getElementById('contact-form').reset();
                 }, 5000);
             }, (err) => {
-
+                
                 btn.innerText = 'Erreur';
                 btn.classList.replace('bg-white', 'bg-red-500');
                 status.innerText = "Oups, une erreur technique. Envoyez-nous un mail direct à contact@backitalxclanumerix.fr";
                 status.classList.remove('hidden');
                 status.classList.add('text-red-400');
-                console.log(JSON.stringify(err));
+                console.error('Erreur EmailJS:', err); 
                 
                 setTimeout(() => {
                     btn.innerText = originalText;
