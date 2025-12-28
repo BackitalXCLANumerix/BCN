@@ -46,6 +46,12 @@
             mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
         }
     </style>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+       (function(){
+          emailjs.init("service_h3i6men");
+       })();
+    </script>
 </head>
 <body class="antialiased relative">
 
@@ -313,12 +319,16 @@
             <p class="text-gray-400 mb-8">Envoyez-nous un message ou réservez un créneau directement.</p>
             
             <div class="bg-surface border border-border rounded-2xl p-6 shadow-2xl">
-                <form class="space-y-4">
-                    <input type="email" placeholder="Votre email pro" class="w-full bg-background border border-border rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-white focus:outline-none transition-all">
-                    <textarea rows="4" placeholder="Décrivez votre projet en quelques mots..." class="w-full bg-background border border-border rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-white focus:outline-none transition-all"></textarea>
-                    <button class="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-200 transition-all">
+                <form id="contact-form" class="space-y-4">
+                    <input type="email" name="user_email" required placeholder="Votre email pro" class="w-full bg-background border border-border rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-white focus:outline-none transition-all">
+                    
+                    <textarea name="message" rows="4" required placeholder="Décrivez votre projet en quelques mots..." class="w-full bg-background border border-border rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-white focus:outline-none transition-all"></textarea>
+                    
+                    <button type="submit" id="btn-submit" class="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-200 transition-all">
                         Envoyer
                     </button>
+                    
+                    <p id="form-status" class="text-sm text-center hidden"></p>
                 </form>
                 <div class="mt-6 flex items-center justify-center gap-4 text-sm text-gray-500">
                     <span>Ou contactez-nous sur :</span>
@@ -458,7 +468,56 @@
         }
     </script>
 
-</body> </html>
+<script>
+    document.getElementById('contact-form').addEventListener('submit', function(event) {
+        event.preventDefault(); 
+        
+        const btn = document.getElementById('btn-submit');
+        const status = document.getElementById('form-status');
+        
+       
+        const originalText = btn.innerText;
+        btn.innerText = 'Envoi en cours...';
+        btn.disabled = true;
+
+        const serviceID = 'service_h3i6men';
+
+        emailjs.sendForm(serviceID, templateID, this)
+            .then(() => {
+                // Succès
+                btn.innerText = 'Envoyé !';
+                btn.classList.replace('bg-white', 'bg-green-500');
+                btn.classList.replace('text-black', 'text-white');
+                
+                status.innerText = "Message reçu 5/5. On revient vers vous très vite.";
+                status.classList.remove('hidden');
+                status.classList.add('text-green-400');
+                
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                    btn.classList.replace('bg-green-500', 'bg-white');
+                    btn.classList.replace('text-white', 'text-black');
+                    status.classList.add('hidden');
+                    document.getElementById('contact-form').reset();
+                }, 5000);
+            }, (err) => {
+
+                btn.innerText = 'Erreur';
+                btn.classList.replace('bg-white', 'bg-red-500');
+                status.innerText = "Oups, une erreur technique. Envoyez-nous un mail direct à contact@backitalxclanumerix.fr";
+                status.classList.remove('hidden');
+                status.classList.add('text-red-400');
+                console.log(JSON.stringify(err));
+                
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                    btn.classList.replace('bg-red-500', 'bg-white');
+                }, 5000);
+            });
+    });
+</script>
 
     
 </body>
